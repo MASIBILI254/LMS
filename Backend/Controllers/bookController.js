@@ -1,4 +1,4 @@
-import Book from "../model/bookModel";
+import Book from "../model/bookModel.js";
 
 export const addBook = async (req, res) => {
     const { title, author, category, publishedDate, isbn, availableCopies } = req.body;
@@ -8,6 +8,18 @@ export const addBook = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
+        // Check if book already exists
+        const existingBook = await Book.findOne({ title });
+        if (existingBook) {
+            existingBook.availableCopies += 1;
+            await existingBook.save();
+            return res.status(200).json({
+                message: "Book already exists, available copies increased",
+                book: existingBook
+            });
+        }
+
+        // Otherwise create a new book
         const newBook = new Book({
             title,
             author,
@@ -18,11 +30,13 @@ export const addBook = async (req, res) => {
         });
 
         await newBook.save();
-        res.status(201).json({ message: "Book added successfully", book: newBook });
+        return res.status(201).json({ message: "Book added successfully", book: newBook });
+
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        return res.status(500).json({ message: "Server error", error: error.message });
     }
-}
+};
+
 // get all books
 export const getAllBooks = async (req, res) => {
     try {
