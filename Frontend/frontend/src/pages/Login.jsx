@@ -1,14 +1,26 @@
 import {useState} from 'react'
 import useAuth from '../auth/useAuth.jsx';
+import { useNavigate } from 'react-router-dom';
 function Login() {
-    const { login, error, loading } = useAuth();
+    const { login, error, loading,role } = useAuth();
     const[formData, setFormData] = useState({ email: '', password: '' });
+    const navigate = useNavigate();
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login(formData);
+        // redirect based on role after login
+        if(role === 'admin'){
+            navigate('/admin');
+        } else if(role === 'librarian'){
+            navigate('/librarian');
+        } else {
+            navigate('/student');
+        }
+
+
     };
 
   return (
@@ -40,6 +52,8 @@ function Login() {
         </button>
       </form>
       {error && <p className='text-red'>{error}</p>}
+      <p className='mt-4'>Don't have an account? <a href="/register" className='text-blue-500 hover:underline'>Register</a></p>
+      <p className='mt-2'>Forgot your password? <a href="/reset" className='text-blue-500 hover:underline'>Reset it</a></p>
     </div>
     
   )

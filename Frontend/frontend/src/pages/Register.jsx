@@ -60,6 +60,8 @@ function Register() {
             </button>
         </form>
         {error && <p>{error}</p>}
+        <p className='mt-4'>Already have an account? <a href="/" className='text-blue-500 hover:underline'>Login</a></p>
+        <p className='mt-2'>Forgot your password? <a href="/reset" className='text-blue-500 hover:underline'>Reset it</a></p>
         </div>
 
 

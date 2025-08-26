@@ -11,7 +11,7 @@ const useAuth = create((set) => ({
     login: async (formData) => {
         set({ loading: true, error: null });
         try {
-            const response = await api.post('/user/login', { formData });
+            const response = await api.post('/user/login',  formData );
             const { user, token } = response.data;
             localStorage.setItem("token", token);
             set({ user, role: user.role, token, loading: false });
@@ -27,6 +27,7 @@ const useAuth = create((set) => ({
             set({loading:false});
             return response.data;
         } catch (error) {
+            console.error("Register error:", error.response?.data || error.message);
             set({ error: error.response?.data?.message || "Registration failed", loading: false });
         }
     },
